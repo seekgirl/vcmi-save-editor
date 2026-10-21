@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest an improvement or compatible save-editing function
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: "The current candidate targets VCMI 1.7.5 / save format 902 on Apple Silicon macOS. Do not attach personal saves, copyrighted game data, credentials, or private paths."
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What problem would this solve?
+      description: Describe the player workflow and the save data involved, rather than only the proposed implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Relevant VCMI version and save format
+      placeholder: "1.7.5 / 902"
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and CPU, if relevant
+      placeholder: "macOS 27.0.1 / Apple Silicon"
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility or licensing notes
+      description: Mention version constraints, required upstream behavior, or source/asset provenance if known.
+

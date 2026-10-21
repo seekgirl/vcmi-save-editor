@@ -1,0 +1,26 @@
+{
+  "version": "1.7.5",
+  "vcmi_commit": "6901839ae9760dfcd1d5ff2c4aa4ef6968fee752",
+  "runtime_archive_url": "https://github.com/vcmi/vcmi/releases/download/1.7.5/VCMI-macOS-arm.dmg",
+  "runtime_archive_sha256": "b56b55d0671ae604effb12d0394b74a552f203426cafa165f82488505fb465e3",
+  "library_sha256": {
+    "libboost_atomic.dylib": "2563e8da5d5fa3de5dee3985a9261024bebe365983f265524fcf29d0956b4882",
+    "libboost_chrono.dylib": "c0146020aa826a69fdd37e684d3aa01be8c820adf1938ed080d28b07f5a5cda9",
+    "libboost_container.dylib": "fdec47de107c7b1e65be14d83ac3c0b39d3a0fdc80ba381a3b99b06cb44a7142",
+    "libboost_date_time.dylib": "9d9a7fc5982a113259d1fc2069e924d5fc1efffc5fbbf10c0e29eb6c647d0043",
+    "libboost_filesystem.dylib": "b9f51d7a5b122f481cfa29fbfc617a251daf336bb149669cba73040de5836082",
+    "libboost_iostreams.dylib": "717b73c8be4153fd909de3f2e0c5966eeaeed96917850f9c3394ba3d77445896",
+    "libboost_locale.dylib": "e09cfb835305d6426f27cfa4d6f8e3272ca9a6434f07a500b14720f994c8f3c4",
+    "libboost_program_options.dylib": "10fd3b15f758f3b352a97ddd3217c9f7f15e5f1a1e7d3eb42d333c2dc522fac3",
+    "libboost_random.dylib": "a4b1c9cae19568ece451990281386104e8e075e064ef78e4e0b9dac8bfd75452",
+    "libboost_regex.dylib": "5600fc1f0871d9d6bc17a245c4e689f9d734e06d815881ff8505c5141b79a019",
+    "libboost_system.dylib": "64d3bc20e2cb3329b45e713e5f6241d48304aa3f34790f4a70902c79446e01bf",
+    "libboost_thread.dylib": "ea518e88beaeab20fafdda8a60c4221b32ea578e48c1f46e895c898279298ca1",
+    "libminizip.dylib": "1bb833376f4d68cdc763826876f6b83a97c55f00dcf322e31943aea2f5f4c190",
+    "libtbb.12.13.dylib": "08cd43c642fdac6f6ec3b63276b006d7060f89c4f98716a217b1233d6df9de46",
+    "libtbb.12.dylib": "08cd43c642fdac6f6ec3b63276b006d7060f89c4f98716a217b1233d6df9de46",
+    "libtbb.dylib": "08cd43c642fdac6f6ec3b63276b006d7060f89c4f98716a217b1233d6df9de46",
+    "libvcmi.dylib": "9af51409e00a9da254342cfd6db8d1f22c55ba6dfbc183280e2298c24b292f3a"
+  },
+  "note": "Exact official external runtime build inputs; no VCMI/Boost/oneTBB binary is included in this source preview. Third-party licenses remain unchanged."
+}

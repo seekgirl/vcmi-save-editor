@@ -1,0 +1,66 @@
+name: Bug report
+description: Report a reproducible issue using a copy of your save
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "This template is for the proposed v0.2.0-alpha.1 candidate. Do not upload personal saves, copyrighted game assets, passwords, credentials, or private file paths. Back up your original save and test a copy."
+  - type: input
+    id: app-version
+    attributes:
+      label: Editor version/build
+      placeholder: "v0.2.0-alpha.1 (or local 0.1.5 build 7)"
+    validations:
+      required: true
+  - type: input
+    id: vcmi-version
+    attributes:
+      label: VCMI version and commit, if shown
+      placeholder: "1.7.5 / 6901839..."
+    validations:
+      required: true
+  - type: input
+    id: save-format
+    attributes:
+      label: Save format and file type
+      placeholder: "902 / .vsgm1"
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version and CPU
+      placeholder: "macOS 27.0.1 / Apple Silicon"
+    validations:
+      required: true
+  - type: dropdown
+    id: test-type
+    attributes:
+      label: Test path
+      options:
+        - SwiftUI app
+        - Native editor-engine command
+        - Swift backend copy test
+        - Other (describe below)
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Use a copy of a save and redact private information and absolute paths.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and redacted diagnostics
+    validations:
+      required: true
+

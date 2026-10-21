@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "vcmi": {
+    "repository": "https://github.com/vcmi/vcmi.git",
+    "tag": "1.7.5",
+    "commit": "6901839ae9760dfcd1d5ff2c4aa4ef6968fee752",
+    "license": "GPL-2.0-or-later",
+    "dependencies_commit": "2e1924490c80547a8f85ed88aca29223057e832b"
+  },
+  "boost": {
+    "version": "1.83.0",
+    "url": "https://archives.boost.io/release/1.83.0/source/boost_1_83_0.tar.bz2",
+    "metadata_url": "https://archives.boost.io/release/1.83.0/source/boost_1_83_0.tar.bz2.json",
+    "sha256": "6478edfe2f3305127cffe8caf73ea0176c53769f4bf1585be237eb30798c3b8e",
+    "commit": "564e2ac16907019696cdaba8a93e3588ec596062",
+    "license": "BSL-1.0"
+  },
+  "onetbb": {
+    "repository": "https://github.com/uxlfoundation/oneTBB.git",
+    "tag": "v2021.13.0",
+    "commit": "1c4c93fc5398c4a1acb3492c02db4699f3048dea",
+    "license": "Apache-2.0"
+  },
+  "runtime_reference": {
+    "url": "https://github.com/vcmi/vcmi/releases/download/1.7.5/VCMI-macOS-arm.dmg",
+    "sha256": "b56b55d0671ae604effb12d0394b74a552f203426cafa165f82488505fb465e3",
+    "note": "External VCMI runtime, not rebuilt or relicensed by the helper build."
+  },
+  "server_sources": [
+    "server/CGameHandler.cpp",
+    "server/NetPacksServer.cpp",
+    "server/ServerSpellCastEnvironment.cpp",
+    "server/TurnTimerHandler.cpp",
+    "server/battles/BattleActionProcessor.cpp",
+    "server/battles/BattleFlowProcessor.cpp",
+    "server/battles/BattleProcessor.cpp",
+    "server/battles/BattleResultProcessor.cpp",
+    "server/processors/HeroPoolProcessor.cpp",
+    "server/processors/NewTurnProcessor.cpp",
+    "server/processors/PlayerMessageProcessor.cpp",
+    "server/processors/TurnOrderProcessor.cpp",
+    "server/queries/BattleQueries.cpp",
+    "server/queries/CQuery.cpp",
+    "server/queries/MapQueries.cpp",
+    "server/queries/QueriesProcessor.cpp",
+    "server/queries/VisitQueries.cpp"
+  ]
+}
