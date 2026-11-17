@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>长文转短文案 · 免费体验版</title>
-<meta name="description" content="贴一段长文，一键生成小红书、朋友圈、X 三种风格的短文案。免费体验版，每天每浏览器免费 5 次。">
+<meta name="description" content="贴一段长文，一键生成小红书、朋友圈两种风格的短文案。免费体验版，每天每浏览器免费 5 次。">
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f6f6f4; color: #222; line-height: 1.6; }
@@ -38,7 +38,7 @@
 <body>
 <div class="wrap">
   <h1>长文转短文案</h1>
-  <p class="sub">贴一段长文（公众号文章、课程笔记、产品介绍），一键生成小红书、朋友圈、X 三种风格的短文案。</p>
+  <p class="sub">贴一段长文（公众号文章、课程笔记、产品介绍），一键生成小红书、朋友圈两种风格的短文案。</p>
 
   <div class="notice">免费体验版：由公开免费模型驱动，生成可能较慢（约 10–60 秒），请耐心等待。每天每浏览器免费 5 次。不登录、不注册，你的文字只发给模型服务生成文案，不保存在本站。</div>
 
@@ -51,7 +51,7 @@
   <div class="hint">填了会让文案风格向这群人靠拢，不填也可以。</div>
 
   <div class="row">
-    <button class="primary" id="go">一键生成三平台文案</button>
+    <button class="primary" id="go">一键生成两平台文案</button>
     <button class="ghost" id="example">试试示例</button>
     <button class="ghost" id="clear">清空</button>
     <span class="quota" id="quota"></span>
@@ -67,12 +67,6 @@
     <h2>朋友圈 <span class="tag">口语、短 · 100 字左右</span></h2>
     <div class="out" id="out-pyq">还没有生成。</div>
     <div class="meta"><span id="count-pyq"></span><button class="ghost small" data-copy="out-pyq">复制</button></div>
-  </div>
-
-  <div class="card">
-    <h2>X（推特） <span class="tag">短句、有钩子 · 280 字以内</span></h2>
-    <div class="out" id="out-x">还没有生成。</div>
-    <div class="meta"><span id="count-x"></span><button class="ghost small" data-copy="out-x">复制</button></div>
   </div>
 
   <div class="feedback">
@@ -125,7 +119,7 @@
     document.getElementById('srcCount').textContent = srcEl.value.length;
   });
 
-  var SAMPLE = '今天读了一篇讲独立开发的文章，作者一个人做了个小工具：帮写公众号、播客长文的人，自动生成小红书、朋友圈、推特三种风格的短文案。最开始只是他自己用着顺手的脚本，写完长文要手动拆三种文案太烦了。发到论坛分享之后，评论区反应不错，他才做成产品。前三个月基本零收入，注册才两百多，付费个位数，中间两次想放弃。后来他把目标用户从所有内容创作者，收窄到每天要发多平台内容的自媒体运营，定价从订阅制改成按次付费，转化率反而上去了。现在注册用户三千八百多，付费转化率百分之六左右，月流水四五千块。他踩过最大的坑是一开始想做全能工具，什么平台都支持，结果每个功能都做得不上不下，留存很差。砍到只做三个平台之后，留存反而涨了一倍。';
+  var SAMPLE = '今天读了一篇讲独立开发的文章，作者一个人做了个小工具：帮写公众号、播客长文的人，自动生成小红书、朋友圈两种风格的短文案。最开始只是他自己用着顺手的脚本，写完长文要手动拆三种文案太烦了。发到论坛分享之后，评论区反应不错，他才做成产品。前三个月基本零收入，注册才两百多，付费个位数，中间两次想放弃。后来他把目标用户从所有内容创作者，收窄到每天要发多平台内容的自媒体运营，定价从订阅制改成按次付费，转化率反而上去了。现在注册用户三千八百多，付费转化率百分之六左右，月流水四五千块。他踩过最大的坑是一开始想做全能工具，什么平台都支持，结果每个功能都做得不上不下，留存很差。砍到只做两个平台之后，留存反而涨了一倍。';
 
   document.getElementById('example').addEventListener('click', function () {
     srcEl.value = SAMPLE;
@@ -144,7 +138,6 @@
     var task = '';
     if (style === 'xhs') task = '改写成一篇小红书笔记：先给一个吸引人的标题（20字以内），再写正文 300–500 字，口语化、有真实感、分段清晰，可用少量表情符号；结尾加 3–6 个相关话题标签（#话题）。';
     if (style === 'pyq') task = '改写成一条朋友圈文案：口语化，像在跟朋友聊天，100 字左右，只写原文里最打动人的一点，结尾可以加一句互动提问。不要标题，不要话题标签。';
-    if (style === 'x') task = '改写成一条 X（推特）文案：280 字以内，短句、有钩子，第一句就要抓住人，信息密度高。可以分 2–3 行。最多 1–2 个话题标签。';
     return base + audLine + task + '\n\n原文如下：\n' + text;
   }
 
@@ -191,12 +184,10 @@
     goBtn.textContent = '生成中，请稍候…';
     setOut('out-xhs', '生成中…', 'loading');
     setOut('out-pyq', '生成中…', 'loading');
-    setOut('out-x', '生成中…', 'loading');
 
     var jobs = [
       { id: 'out-xhs', cid: 'count-xhs', style: 'xhs' },
-      { id: 'out-pyq', cid: 'count-pyq', style: 'pyq' },
-      { id: 'out-x', cid: 'count-x', style: 'x' }
+      { id: 'out-pyq', cid: 'count-pyq', style: 'pyq' }
     ];
     var done = 0, okCount = 0;
     jobs.forEach(function (job) {
@@ -211,7 +202,7 @@
         done++;
         if (done === jobs.length) {
           goBtn.disabled = false;
-          goBtn.textContent = '一键生成三平台文案';
+          goBtn.textContent = '一键生成两平台文案';
           if (okCount > 0) {
             try {
               localStorage.setItem(todayKey(), String(usedCount() + 1));
