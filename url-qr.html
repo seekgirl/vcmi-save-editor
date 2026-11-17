@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网址转二维码免费 | 把链接做成二维码，扫码直达</title>
+<meta name="description" content="免费把网址转成二维码：粘贴链接，一键生成可下载的二维码图片，印在海报、名片、菜单上，扫码直达你的网页。本地生成，不上传数据。">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/qrcode.min.js"></script>
+<script src="assets/tool.js"></script>
+</head>
+<body>
+<header><nav class="nav">
+<a class="brand" href="index.html">二维码<span>小工具</span></a>
+<a href="index.html">首页</a>
+<a href="url-qr.html" class="on">网址转二维码</a>
+<a href="wechat-qr.html">微信二维码</a>
+<a href="vcard-qr.html">名片二维码</a>
+<a href="wifi-qr.html">WiFi 二维码</a>
+<a href="logo-qr.html">二维码加 logo</a>
+</nav></header>
+<main>
+<h1>网址转二维码（免费）</h1>
+<p class="sub">把任意网页链接做成二维码：印在海报、传单、名片、桌牌或产品包装上，别人一扫就打开你的页面。不用注册，免费下载。</p>
+
+<div class="card">
+<label for="input">粘贴网址</label>
+<input type="url" id="input" placeholder="例如：https://www.example.com/活动页面" value="https://seekgirl.github.io/">
+<p class="hint">不带 https:// 也行，工具会自动补上。支持中文网址，生成前请确认链接能在浏览器里正常打开。</p>
+<div class="row">
+<div><label for="size">图片尺寸</label>
+<select id="size"><option value="360">360 × 360</option><option value="480" selected>480 × 480</option><option value="720">720 × 720</option><option value="1080">1080 × 1080（印刷推荐）</option></select></div>
+<div><label for="level">纠错等级</label>
+<select id="level"><option value="L">L</option><option value="M" selected>M（常用）</option><option value="Q">Q</option><option value="H">H（印刷、海报推荐）</option></select></div>
+</div>
+<button class="btn" id="gen">生成二维码</button>
+<button class="btn ghost" id="dl" disabled>下载 PNG 图片</button>
+<p class="err" id="err"></p>
+<div class="qrwrap"><canvas id="qr"></canvas></div>
+<p class="qrmeta" id="meta">生成后请用手机扫一扫，确认打开的是正确的页面再印刷。</p>
+</div>
+
+<h2>网址二维码适合贴在哪</h2>
+<ul>
+<li><strong>线下海报 / 易拉宝：</strong>扫码直达活动报名页、店铺主页。</li>
+<li><strong>名片 / 宣传单：</strong>扫码打开个人主页、作品集或微信公众号文章链接。</li>
+<li><strong>餐厅桌牌 / 菜单：</strong>扫码打开在线菜单或点餐页。</li>
+<li><strong>产品包装：</strong>扫码查看说明书、售后或防伪查询页。</li>
+</ul>
+<h2>注意事项</h2>
+<ul>
+<li>链接越短，二维码图案越稀疏、越好扫。太长的链接建议先用短链接服务缩短再生成。</li>
+<li>印刷时建议用 1080 像素、H 纠错等级，图案不要小于 2 厘米见方。</li>
+<li>二维码只记录链接本身：如果原网页改版、下线或域名过期，扫码后同样打不开，请定期检查链接是否有效。</li>
+</ul>
+
+<div class="note">相关工具：<a href="index.html">通用二维码生成器</a> · <a href="wechat-qr.html">微信二维码生成</a> · <a href="logo-qr.html">二维码加 logo</a></div>
+</main>
+<footer><div class="foot">
+<span>二维码小工具 · 免费使用，无需注册 · 内容仅在本地生成，不收集个人信息</span>
+<span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Furl&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+</div></footer>
+<script>
+(function () {
+  var input = document.getElementById('input');
+  var canvas = document.getElementById('qr');
+  var dl = document.getElementById('dl');
+  var err = document.getElementById('err');
+  var meta = document.getElementById('meta');
+  document.getElementById('gen').addEventListener('click', function () {
+    var url = input.value.trim();
+    if (!url) { QRTool.showErr(err, '请先粘贴一个网址。'); return; }
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    try { new URL(url); } catch (e) { QRTool.showErr(err, '这个网址格式不对，请检查后重试。'); return; }
+    QRTool.hideErr(err);
+    try {
+      var info = QRTool.draw(canvas, url, {
+        size: parseInt(document.getElementById('size').value, 10),
+        level: document.getElementById('level').value
+      });
+      meta.textContent = '已生成：' + info.px + ' × ' + info.px + ' 像素，扫码打开 ' + url;
+      dl.disabled = false;
+      QRTool.count('url');
+    } catch (e) {
+      QRTool.showErr(err, '链接太长，生成失败：请先把链接缩短再试。');
+    }
+  });
+  dl.addEventListener('click', function () { QRTool.download(canvas, 'url-qrcode.png'); });
+})();
+</script>
+</body>
+</html>

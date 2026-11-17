@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二维码加 logo | 中间放品牌标志，扫码不受影响</title>
+<meta name="description" content="免费给二维码加 logo：上传品牌标志图片，自动放在二维码中间并留出白边，下载 PNG 可直接印刷。本地处理，图片不上传。">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/qrcode.min.js"></script>
+<script src="assets/tool.js"></script>
+</head>
+<body>
+<header><nav class="nav">
+<a class="brand" href="index.html">二维码<span>小工具</span></a>
+<a href="index.html">首页</a>
+<a href="url-qr.html">网址转二维码</a>
+<a href="wechat-qr.html">微信二维码</a>
+<a href="vcard-qr.html">名片二维码</a>
+<a href="wifi-qr.html">WiFi 二维码</a>
+<a href="logo-qr.html" class="on">二维码加 logo</a>
+</nav></header>
+<main>
+<h1>二维码加 logo</h1>
+<p class="sub">上传品牌标志，自动放在二维码中间：扫码不受影响，又能一眼认出是你家的码。图片只在浏览器里处理，不会上传。</p>
+
+<div class="card">
+<label for="input">输入网址或文字</label>
+<textarea id="input" placeholder="例如：https://www.example.com">https://seekgirl.github.io/</textarea>
+<label for="logo">上传 logo 图片（PNG 或 JPG，建议正方形、带白底）</label>
+<input type="file" id="logo" accept="image/png,image/jpeg,image/webp">
+<p class="hint" id="logoname">尚未上传 logo。上传后 logo 会以约 22% 的宽度居中显示，周围自动留白边。</p>
+<div class="row">
+<div><label for="size">图片尺寸</label>
+<select id="size"><option value="480">480 × 480</option><option value="720" selected>720 × 720</option><option value="1080">1080 × 1080（印刷推荐）</option></select></div>
+<div><label for="fg">二维码颜色</label>
+<select id="fg"><option value="#111111" selected>黑色（最稳）</option><option value="#0b3d5c">深蓝</option><option value="#1a5c2a">深绿</option><option value="#5b21b6">深紫</option></select></div>
+</div>
+<button class="btn" id="gen">生成带 logo 的二维码</button>
+<button class="btn ghost" id="dl" disabled>下载 PNG 图片</button>
+<p class="err" id="err"></p>
+<div class="qrwrap"><canvas id="qr"></canvas></div>
+<p class="qrmeta" id="meta">生成后请用手机扫一扫，确认能正常识别再印刷。</p>
+</div>
+
+<h2>加 logo 后还能扫吗</h2>
+<p>能。本工具默认用最高的 H 级纠错：二维码本身允许约 30% 的图案被遮挡，而中间的 logo 只占约 22% 宽度，周围还留了白边。只要 logo 不过大、二维码本身不缩得太小，手机都能正常识别。生成后请务必实测一次。</p>
+<h2>logo 图片建议</h2>
+<ul>
+<li>用正方形图片效果最好，长方形会被居中裁成正方形显示区域。</li>
+<li>标志本身带白底最稳妥；透明底图片在深色码上也可用，但请先扫码测试。</li>
+<li>线条太细、对比度太低的 logo 缩小后容易糊，印刷前请放大检查。</li>
+<li>只上传你有权使用的标志，不要用他人品牌 logo。</li>
+</ul>
+
+<div class="note">相关工具：<a href="url-qr.html">网址转二维码</a> · <a href="vcard-qr.html">名片二维码</a> · <a href="index.html">通用二维码生成器</a></div>
+</main>
+<footer><div class="foot">
+<span>二维码小工具 · 免费使用，无需注册 · 内容仅在本地生成，不收集个人信息</span>
+<span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Flogo&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+</div></footer>
+<script>
+(function () {
+  var input = document.getElementById('input');
+  var canvas = document.getElementById('qr');
+  var dl = document.getElementById('dl');
+  var err = document.getElementById('err');
+  var meta = document.getElementById('meta');
+  var logoname = document.getElementById('logoname');
+  var logoImg = null;
+  document.getElementById('logo').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) { logoImg = null; logoname.textContent = '尚未上传 logo。'; return; }
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var img = new Image();
+      img.onload = function () { logoImg = img; logoname.textContent = '已上传：' + f.name + '（' + img.width + '×' + img.height + '）。'; };
+      img.onerror = function () { logoImg = null; QRTool.showErr(err, '这张图片读不出来，请换一张 PNG 或 JPG。'); };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(f);
+  });
+  document.getElementById('gen').addEventListener('click', function () {
+    var text = input.value.trim();
+    if (!text) { QRTool.showErr(err, '请先输入网址或文字。'); return; }
+    if (!logoImg) { QRTool.showErr(err, '请先上传一张 logo 图片。'); return; }
+    QRTool.hideErr(err);
+    try {
+      var info = QRTool.draw(canvas, text, {
+        size: parseInt(document.getElementById('size').value, 10),
+        level: 'H',
+        fg: document.getElementById('fg').value,
+        logo: logoImg
+      });
+      meta.textContent = '已生成：' + info.px + ' × ' + info.px + ' 像素，logo 居中显示。请扫码确认能正常识别。';
+      dl.disabled = false;
+      QRTool.count('logo');
+    } catch (e) {
+      QRTool.showErr(err, '内容太长，生成失败：请缩短文字再试。');
+    }
+  });
+  dl.addEventListener('click', function () { QRTool.download(canvas, 'logo-qrcode.png'); });
+})();
+</script>
+</body>
+</html>

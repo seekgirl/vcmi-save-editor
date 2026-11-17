@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微信二维码生成 | 把微信号、链接做成二维码</title>
+<meta name="description" content="免费生成微信场景可用的二维码：把微信号、公众号文章链接或加好友说明做成二维码，下载后可打印张贴或发给朋友。附微信官方二维码的区别说明。">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/qrcode.min.js"></script>
+<script src="assets/tool.js"></script>
+</head>
+<body>
+<header><nav class="nav">
+<a class="brand" href="index.html">二维码<span>小工具</span></a>
+<a href="index.html">首页</a>
+<a href="url-qr.html">网址转二维码</a>
+<a href="wechat-qr.html" class="on">微信二维码</a>
+<a href="vcard-qr.html">名片二维码</a>
+<a href="wifi-qr.html">WiFi 二维码</a>
+<a href="logo-qr.html">二维码加 logo</a>
+</nav></header>
+<main>
+<h1>微信二维码生成</h1>
+<p class="sub">把微信号、公众号文章链接或一段加好友说明做成二维码，下载后可打印张贴、放在名片上，或发给朋友扫码查看。</p>
+
+<div class="note"><strong>先说清楚：</strong>微信官方的「我的二维码」（含微信号的个人名片码）和群二维码，只能在微信 App 里生成，本站无法代为生成。本工具生成的是通用二维码，里面装的是你输入的文字或链接——扫码后对方能看到这段内容，再按你的说明手动加你或打开链接。两者不要混淆。</div>
+
+<div class="card">
+<label for="input">输入微信号、链接或说明文字</label>
+<textarea id="input" placeholder="例如：微信号 seekgirl，加好友请备注「合作」；或粘贴公众号文章链接">微信号 seekgirl，加好友请备注来意</textarea>
+<div class="row">
+<div><label for="size">图片尺寸</label>
+<select id="size"><option value="360">360 × 360</option><option value="480" selected>480 × 480</option><option value="720">720 × 720</option><option value="1080">1080 × 1080（印刷推荐）</option></select></div>
+<div><label for="level">纠错等级</label>
+<select id="level"><option value="L">L</option><option value="M" selected>M（常用）</option><option value="Q">Q</option><option value="H">H（印刷推荐）</option></select></div>
+</div>
+<button class="btn" id="gen">生成二维码</button>
+<button class="btn ghost" id="dl" disabled>下载 PNG 图片</button>
+<p class="err" id="err"></p>
+<div class="qrwrap"><canvas id="qr"></canvas></div>
+<p class="qrmeta" id="meta">生成后请用微信扫一扫确认内容，再发给别人。</p>
+</div>
+
+<h2>三种常见用法</h2>
+<ul>
+<li><strong>个人微信号：</strong>输入微信号和一句备注说明，印在名片或海报上，别人扫码看到号码后手动添加。</li>
+<li><strong>公众号文章：</strong>粘贴文章链接生成二维码，放在线下物料上，扫码直接打开文章。</li>
+<li><strong>加群 / 活动：</strong>把群介绍或报名页链接做成二维码，配合文字说明使用（微信群官方二维码请在微信群内生成，有 7 天有效期）。</li>
+</ul>
+<h2>怎么拿到微信官方二维码</h2>
+<ul>
+<li>个人名片码：微信 → 我 → 头像旁的二维码图标 → 我的二维码。</li>
+<li>群二维码：群聊右上角 → 群二维码（注意有效期为 7 天，过期需重新生成）。</li>
+<li>公众号二维码：在微信公众平台后台下载。</li>
+</ul>
+
+<div class="note">相关工具：<a href="url-qr.html">网址转二维码</a> · <a href="vcard-qr.html">名片二维码</a> · <a href="index.html">通用二维码生成器</a></div>
+</main>
+<footer><div class="foot">
+<span>二维码小工具 · 免费使用，无需注册 · 内容仅在本地生成，不收集个人信息</span>
+<span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fwechat&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+</div></footer>
+<script>
+(function () {
+  var input = document.getElementById('input');
+  var canvas = document.getElementById('qr');
+  var dl = document.getElementById('dl');
+  var err = document.getElementById('err');
+  var meta = document.getElementById('meta');
+  document.getElementById('gen').addEventListener('click', function () {
+    var text = input.value.trim();
+    if (!text) { QRTool.showErr(err, '请先输入微信号、链接或说明文字。'); return; }
+    QRTool.hideErr(err);
+    try {
+      var info = QRTool.draw(canvas, text, {
+        size: parseInt(document.getElementById('size').value, 10),
+        level: document.getElementById('level').value
+      });
+      meta.textContent = '已生成：' + info.px + ' × ' + info.px + ' 像素。请用微信扫一扫确认内容。';
+      dl.disabled = false;
+      QRTool.count('wechat');
+    } catch (e) {
+      QRTool.showErr(err, '内容太长，生成失败：请缩短文字再试。');
+    }
+  });
+  dl.addEventListener('click', function () { QRTool.download(canvas, 'wechat-qrcode.png'); });
+})();
+</script>
+</body>
+</html>

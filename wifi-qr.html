@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiFi 二维码生成 | 扫码自动连 WiFi，不用输密码</title>
+<meta name="description" content="免费生成 WiFi 二维码：填 WiFi 名称和密码，生成二维码贴在店里、家里或办公室，客人扫码自动连接，不用口头报密码。本地生成，密码不上传。">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/qrcode.min.js"></script>
+<script src="assets/tool.js"></script>
+</head>
+<body>
+<header><nav class="nav">
+<a class="brand" href="index.html">二维码<span>小工具</span></a>
+<a href="index.html">首页</a>
+<a href="url-qr.html">网址转二维码</a>
+<a href="wechat-qr.html">微信二维码</a>
+<a href="vcard-qr.html">名片二维码</a>
+<a href="wifi-qr.html" class="on">WiFi 二维码</a>
+<a href="logo-qr.html">二维码加 logo</a>
+</nav></header>
+<main>
+<h1>WiFi 二维码生成</h1>
+<p class="sub">填好 WiFi 名称和密码，生成二维码打印贴在墙上：客人、朋友扫码就能自动连接，不用一个个口头报密码。密码只在你的浏览器里处理，不会上传。</p>
+
+<div class="card">
+<label for="ssid">WiFi 名称（SSID）*</label>
+<input type="text" id="ssid" placeholder="例如：CoffeeShop_WiFi">
+<label for="pwd">WiFi 密码</label>
+<input type="text" id="pwd" placeholder="无密码网络请留空" autocomplete="off">
+<label for="enc">加密方式</label>
+<select id="enc"><option value="WPA" selected>WPA / WPA2（最常见）</option><option value="WEP">WEP（老路由器）</option><option value="nopass">无密码（开放网络）</option></select>
+<label><input type="checkbox" id="hidden" style="width:auto"> 这是隐藏网络（不在列表中显示）</label>
+<label for="size">图片尺寸</label>
+<select id="size"><option value="360">360 × 360</option><option value="480" selected>480 × 480</option><option value="720">720 × 720</option><option value="1080">1080 × 1080（印刷推荐）</option></select>
+<button class="btn" id="gen">生成 WiFi 二维码</button>
+<button class="btn ghost" id="dl" disabled>下载 PNG 图片</button>
+<p class="err" id="err"></p>
+<div class="qrwrap"><canvas id="qr"></canvas></div>
+<p class="qrmeta" id="meta">生成后请用另一台手机扫码测试，确认能自动连接再打印张贴。</p>
+</div>
+
+<h2>适用场景</h2>
+<ul>
+<li><strong>咖啡店 / 餐厅 / 民宿：</strong>贴在桌牌或前台，顾客扫码即连，不用反复报密码。</li>
+<li><strong>办公室 / 会议室：</strong>贴在门口，来访者自助联网。</li>
+<li><strong>家里：</strong>朋友来做客扫码连接，省去拼写复杂密码的麻烦。</li>
+</ul>
+<h2>注意事项</h2>
+<ul>
+<li>WiFi 名称和密码要与路由器设置完全一致，大小写、空格都不能错，否则扫码后连不上。</li>
+<li>部分国产手机的扫码入口在系统相机或 WLAN 设置页，不在微信里——如果微信扫码后只显示一串文字，改用手机自带相机扫码。</li>
+<li>二维码一旦印出，知道密码的人扫码即可联网；改密码后请重新生成并替换旧码。</li>
+<li>本页密码仅在你的浏览器内使用，不会发送到任何服务器（可在断网后重新打开本页验证）。</li>
+</ul>
+
+<div class="note">相关工具：<a href="url-qr.html">网址转二维码</a> · <a href="vcard-qr.html">名片二维码</a> · <a href="index.html">通用二维码生成器</a></div>
+</main>
+<footer><div class="foot">
+<span>二维码小工具 · 免费使用，无需注册 · 内容仅在本地生成，不收集个人信息</span>
+<span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fwifi&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+</div></footer>
+<script>
+(function () {
+  var canvas = document.getElementById('qr');
+  var dl = document.getElementById('dl');
+  var err = document.getElementById('err');
+  var meta = document.getElementById('meta');
+  function esc(s) { return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/:/g, '\\:').replace(/"/g, '\\"'); }
+  document.getElementById('gen').addEventListener('click', function () {
+    var ssid = document.getElementById('ssid').value.trim();
+    var pwd = document.getElementById('pwd').value;
+    var enc = document.getElementById('enc').value;
+    var hidden = document.getElementById('hidden').checked;
+    if (!ssid) { QRTool.showErr(err, '请先填写 WiFi 名称（SSID）。'); return; }
+    if (enc !== 'nopass' && !pwd) { QRTool.showErr(err, '加密网络需要填写密码；无密码网络请把加密方式选为「无密码」。'); return; }
+    QRTool.hideErr(err);
+    var text = 'WIFI:T:' + enc + ';S:' + esc(ssid) + ';' +
+      (enc === 'nopass' ? '' : 'P:' + esc(pwd) + ';') +
+      (hidden ? 'H:true;' : '') + ';';
+    try {
+      var info = QRTool.draw(canvas, text, {
+        size: parseInt(document.getElementById('size').value, 10),
+        level: 'H'
+      });
+      meta.textContent = '已生成：' + info.px + ' × ' + info.px + ' 像素，扫码可连接「' + ssid + '」。';
+      dl.disabled = false;
+      QRTool.count('wifi');
+    } catch (e) {
+      QRTool.showErr(err, '生成失败：请检查 WiFi 名称与密码是否过长。');
+    }
+  });
+  dl.addEventListener('click', function () { QRTool.download(canvas, 'wifi-qrcode.png'); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>免费二维码生成器 | 在线生成，扫码即用</title>
+<meta name="description" content="免费在线二维码生成器：把网址、文字、电话做成二维码，浏览器本地生成，不上传数据，可下载 PNG 图片打印使用。">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/qrcode.min.js"></script>
+<script src="assets/tool.js"></script>
+</head>
+<body>
+<header><nav class="nav">
+<a class="brand" href="index.html">二维码<span>小工具</span></a>
+<a href="index.html" class="on">首页</a>
+<a href="url-qr.html">网址转二维码</a>
+<a href="wechat-qr.html">微信二维码</a>
+<a href="vcard-qr.html">名片二维码</a>
+<a href="wifi-qr.html">WiFi 二维码</a>
+<a href="logo-qr.html">二维码加 logo</a>
+</nav></header>
+<main>
+<h1>免费二维码生成器</h1>
+<p class="sub">输入网址或任意文字，点一下就能生成二维码，可下载 PNG 图片打印、张贴、发给朋友。全部在你的浏览器里完成，不上传、不保存你的内容。</p>
+
+<div class="card">
+<label for="input">输入网址或文字</label>
+<textarea id="input" placeholder="例如：https://example.com，或任意文字、电话号码">https://seekgirl.github.io/</textarea>
+<div class="row">
+<div><label for="size">图片尺寸</label>
+<select id="size"><option value="360">360 × 360</option><option value="480" selected>480 × 480</option><option value="720">720 × 720</option><option value="1080">1080 × 1080</option></select></div>
+<div><label for="level">纠错等级</label>
+<select id="level"><option value="L">L（内容短时用）</option><option value="M" selected>M（常用）</option><option value="Q">Q</option><option value="H">H（遮挡、打印推荐）</option></select></div>
+</div>
+<button class="btn" id="gen">生成二维码</button>
+<button class="btn ghost" id="dl" disabled>下载 PNG 图片</button>
+<p class="err" id="err"></p>
+<div class="qrwrap"><canvas id="qr"></canvas></div>
+<p class="qrmeta" id="meta">点「生成二维码」后在这里预览，下载后可直接打印使用。</p>
+</div>
+
+<h2>怎么用</h2>
+<ol>
+<li>在框里输入网址、文字或电话号码。</li>
+<li>点「生成二维码」，手机扫一扫确认内容无误。</li>
+<li>点「下载 PNG 图片」，保存后可打印、贴到海报或名片上。</li>
+</ol>
+<h2>常见问题</h2>
+<p><strong>生成二维码要钱吗？</strong>不要。本站所有功能免费，也不用注册登录。</p>
+<p><strong>我的输入会被上传吗？</strong>不会。二维码由你浏览器里的程序直接算出来，内容不经过任何服务器。你也可以断网后使用本页（首次打开需加载完页面文件）。</p>
+<p><strong>二维码会过期吗？</strong>不会。二维码本身只是一张记录了内容的图片，只要图片清晰、内容对应的网址或信息有效，就一直能扫。</p>
+<p><strong>扫码后打不开网址怎么办？</strong>先检查输入的网址是否完整（带 https://），再用手机自带相机扫码试试；仍打不开，多半是目标网站本身无法访问。</p>
+
+<div class="note">需要更具体的用法？试试：<a href="url-qr.html">网址转二维码</a>、<a href="wechat-qr.html">微信二维码生成</a>、<a href="vcard-qr.html">名片二维码</a>、<a href="wifi-qr.html">WiFi 二维码</a>、<a href="logo-qr.html">二维码加 logo</a>。</div>
+</main>
+<footer><div class="foot">
+<span>二维码小工具 · 免费使用，无需注册 · 内容仅在本地生成，不收集个人信息</span>
+<span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fhome&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+</div></footer>
+<script>
+(function () {
+  var input = document.getElementById('input');
+  var canvas = document.getElementById('qr');
+  var dl = document.getElementById('dl');
+  var err = document.getElementById('err');
+  var meta = document.getElementById('meta');
+  document.getElementById('gen').addEventListener('click', function () {
+    var text = input.value.trim();
+    if (!text) { QRTool.showErr(err, '请先输入网址或文字。'); return; }
+    QRTool.hideErr(err);
+    try {
+      var info = QRTool.draw(canvas, text, {
+        size: parseInt(document.getElementById('size').value, 10),
+        level: document.getElementById('level').value
+      });
+      meta.textContent = '已生成：' + info.px + ' × ' + info.px + ' 像素，扫码内容为上方输入的文字。';
+      dl.disabled = false;
+      QRTool.count('home');
+    } catch (e) {
+      QRTool.showErr(err, '内容太长，生成失败：请缩短文字或改用更低的纠错等级。');
+    }
+  });
+  dl.addEventListener('click', function () { QRTool.download(canvas, 'qrcode.png'); });
+})();
+</script>
+</body>
+</html>

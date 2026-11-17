@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>名片二维码生成 | 扫码直接保存联系方式</title>
+<meta name="description" content="免费生成名片二维码：填姓名、电话、邮箱、公司，生成 vCard 二维码，别人一扫就能把你的联系方式存进手机通讯录。可下载打印。">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/qrcode.min.js"></script>
+<script src="assets/tool.js"></script>
+</head>
+<body>
+<header><nav class="nav">
+<a class="brand" href="index.html">二维码<span>小工具</span></a>
+<a href="index.html">首页</a>
+<a href="url-qr.html">网址转二维码</a>
+<a href="wechat-qr.html">微信二维码</a>
+<a href="vcard-qr.html" class="on">名片二维码</a>
+<a href="wifi-qr.html">WiFi 二维码</a>
+<a href="logo-qr.html">二维码加 logo</a>
+</nav></header>
+<main>
+<h1>名片二维码生成</h1>
+<p class="sub">填好联系方式，生成一张 vCard 名片二维码：别人用手机一扫，就能把你的姓名、电话、邮箱直接存进通讯录，不用手动输入。适合印在纸质名片、工牌和会议胸卡上。</p>
+
+<div class="card">
+<div class="row">
+<div><label for="fn">姓名 *</label><input type="text" id="fn" placeholder="例如：张三"></div>
+<div><label for="tel">电话 *</label><input type="tel" id="tel" placeholder="例如：13800000000"></div>
+</div>
+<div class="row">
+<div><label for="email">邮箱</label><input type="email" id="email" placeholder="例如：zhangsan@example.com"></div>
+<div><label for="org">公司 / 单位</label><input type="text" id="org" placeholder="例如：某某科技有限公司"></div>
+</div>
+<div class="row">
+<div><label for="title">职位</label><input type="text" id="title" placeholder="例如：市场经理"></div>
+<div><label for="url">个人主页 / 网址</label><input type="url" id="url" placeholder="例如：https://example.com"></div>
+</div>
+<label for="size">图片尺寸</label>
+<select id="size"><option value="360">360 × 360</option><option value="480" selected>480 × 480</option><option value="720">720 × 720</option><option value="1080">1080 × 1080（印刷推荐）</option></select>
+<button class="btn" id="gen">生成名片二维码</button>
+<button class="btn ghost" id="dl" disabled>下载 PNG 图片</button>
+<p class="err" id="err"></p>
+<div class="qrwrap"><canvas id="qr"></canvas></div>
+<p class="qrmeta" id="meta">生成后请用手机扫一扫，确认能正常保存联系人再印刷。</p>
+</div>
+
+<h2>扫码后会发生什么</h2>
+<p>手机扫码后会识别出这是一张电子名片（vCard 格式），并弹出「添加到通讯录」的提示，姓名、电话、邮箱、公司等信息一次填好，不用逐字输入。不同手机品牌弹出的界面略有不同，但都能保存。</p>
+<h2>注意事项</h2>
+<ul>
+<li>姓名和电话是必填项，其他留空不填也可以生成。</li>
+<li>请勿在名片二维码里放身份证号、家庭住址等敏感信息——二维码印出去就等于公开了。</li>
+<li>换号、离职后记得重新生成：旧二维码里的号码不会自动更新。</li>
+</ul>
+
+<div class="note">相关工具：<a href="wechat-qr.html">微信二维码生成</a> · <a href="url-qr.html">网址转二维码</a> · <a href="logo-qr.html">二维码加 logo</a></div>
+</main>
+<footer><div class="foot">
+<span>二维码小工具 · 免费使用，无需注册 · 内容仅在本地生成，不收集个人信息</span>
+<span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fvcard&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+</div></footer>
+<script>
+(function () {
+  var canvas = document.getElementById('qr');
+  var dl = document.getElementById('dl');
+  var err = document.getElementById('err');
+  var meta = document.getElementById('meta');
+  function esc(s) { return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
+  document.getElementById('gen').addEventListener('click', function () {
+    var fn = document.getElementById('fn').value.trim();
+    var tel = document.getElementById('tel').value.trim();
+    if (!fn || !tel) { QRTool.showErr(err, '请至少填写姓名和电话。'); return; }
+    QRTool.hideErr(err);
+    var v = ['BEGIN:VCARD', 'VERSION:3.0', 'N:;' + esc(fn) + ';;;', 'FN:' + esc(fn), 'TEL;TYPE=CELL:' + esc(tel)];
+    var email = document.getElementById('email').value.trim();
+    var org = document.getElementById('org').value.trim();
+    var title = document.getElementById('title').value.trim();
+    var url = document.getElementById('url').value.trim();
+    if (email) v.push('EMAIL:' + esc(email));
+    if (org) v.push('ORG:' + esc(org));
+    if (title) v.push('TITLE:' + esc(title));
+    if (url) v.push('URL:' + esc(url));
+    v.push('END:VCARD');
+    try {
+      var info = QRTool.draw(canvas, v.join('\n'), {
+        size: parseInt(document.getElementById('size').value, 10),
+        level: 'H'
+      });
+      meta.textContent = '已生成：' + info.px + ' × ' + info.px + ' 像素，扫码可保存「' + fn + '」的联系方式。';
+      dl.disabled = false;
+      QRTool.count('vcard');
+    } catch (e) {
+      QRTool.showErr(err, '内容太长，生成失败：请删减部分信息再试。');
+    }
+  });
+  dl.addEventListener('click', function () { QRTool.download(canvas, 'vcard-qrcode.png'); });
+})();
+</script>
+</body>
+</html>
