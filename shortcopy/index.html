@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长文转短文案 · 免费体验版</title>
+<meta name="description" content="贴一段长文，一键生成小红书、朋友圈、X 三种风格的短文案。免费体验版，每天每浏览器免费 5 次。">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f6f6f4; color: #222; line-height: 1.6; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: 24px; margin: 8px 0 4px; }
+  .sub { color: #666; font-size: 14px; margin: 0 0 16px; }
+  .notice { background: #fff8e1; border: 1px solid #ffe08a; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #6d4c00; margin-bottom: 16px; }
+  label { font-weight: 600; font-size: 14px; display: block; margin: 14px 0 6px; }
+  textarea, input[type=text] { width: 100%; border: 1px solid #ccc; border-radius: 8px; padding: 10px 12px; font-size: 15px; font-family: inherit; background: #fff; }
+  textarea { min-height: 160px; resize: vertical; }
+  .hint { font-size: 12px; color: #888; margin-top: 4px; }
+  .row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  button { border: none; border-radius: 8px; padding: 10px 18px; font-size: 15px; cursor: pointer; }
+  button.primary { background: #e63c3c; color: #fff; font-weight: 600; }
+  button.primary:disabled { background: #ccc; cursor: not-allowed; }
+  button.ghost { background: #fff; border: 1px solid #ccc; color: #333; }
+  button.small { padding: 6px 12px; font-size: 13px; }
+  .quota { font-size: 13px; color: #666; }
+  .card { background: #fff; border: 1px solid #e3e3e0; border-radius: 10px; padding: 16px; margin-top: 16px; }
+  .card h2 { font-size: 17px; margin: 0 0 8px; }
+  .card h2 .tag { font-size: 12px; color: #888; font-weight: 400; margin-left: 6px; }
+  .out { white-space: pre-wrap; word-break: break-word; font-size: 15px; min-height: 40px; }
+  .out.loading { color: #888; }
+  .out.error { color: #c00; font-size: 14px; }
+  .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 13px; color: #888; }
+  .feedback { margin-top: 24px; background: #fff; border: 1px solid #e3e3e0; border-radius: 10px; padding: 16px; font-size: 14px; }
+  footer { margin-top: 28px; font-size: 12px; color: #999; }
+  footer .badges img { vertical-align: middle; margin-right: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>长文转短文案</h1>
+  <p class="sub">贴一段长文（公众号文章、课程笔记、产品介绍），一键生成小红书、朋友圈、X 三种风格的短文案。</p>
+
+  <div class="notice">免费体验版：由公开免费模型驱动，生成可能较慢（约 10–60 秒），请耐心等待。每天每浏览器免费 5 次。不登录、不注册，你的文字只发给模型服务生成文案，不保存在本站。</div>
+
+  <label for="src">长文内容</label>
+  <textarea id="src" placeholder="把长文粘贴在这里，例如一篇公众号文章、一段课程笔记、一段产品介绍……"></textarea>
+  <div class="hint"><span id="srcCount">0</span> 字（最少 30 字，最多 6000 字，超出部分会自动截取）</div>
+
+  <label for="aud">目标人群（选填）</label>
+  <input type="text" id="aud" placeholder="例如：宝妈、自媒体运营、直销从业者……">
+  <div class="hint">填了会让文案风格向这群人靠拢，不填也可以。</div>
+
+  <div class="row">
+    <button class="primary" id="go">一键生成三平台文案</button>
+    <button class="ghost" id="example">试试示例</button>
+    <button class="ghost" id="clear">清空</button>
+    <span class="quota" id="quota"></span>
+  </div>
+
+  <div class="card">
+    <h2>小红书 <span class="tag">标题 + 正文 + 话题标签 · 300–500 字</span></h2>
+    <div class="out" id="out-xhs">还没有生成。粘贴长文后点“一键生成”。</div>
+    <div class="meta"><span id="count-xhs"></span><button class="ghost small" data-copy="out-xhs">复制</button></div>
+  </div>
+
+  <div class="card">
+    <h2>朋友圈 <span class="tag">口语、短 · 100 字左右</span></h2>
+    <div class="out" id="out-pyq">还没有生成。</div>
+    <div class="meta"><span id="count-pyq"></span><button class="ghost small" data-copy="out-pyq">复制</button></div>
+  </div>
+
+  <div class="card">
+    <h2>X（推特） <span class="tag">短句、有钩子 · 280 字以内</span></h2>
+    <div class="out" id="out-x">还没有生成。</div>
+    <div class="meta"><span id="count-x"></span><button class="ghost small" data-copy="out-x">复制</button></div>
+  </div>
+
+  <div class="feedback">
+    <strong>觉得有用？</strong><br>
+    更多次数与付费版正在准备中。如果你愿意为这样的工具付费，请点下面的按钮告诉我（只计一次意愿，不收集任何个人信息）：
+    <div class="row">
+      <button class="ghost" id="want">我想要更多次数</button>
+      <span id="wantMsg" style="font-size:13px;color:#666"></span>
+    </div>
+  </div>
+
+  <footer>
+    <div class="badges">
+      <span>访问量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fshortcopy&label=%E8%AE%BF%E9%97%AE%E9%87%8F&countColor=%230b6fa4" alt="访问量"></span>
+      <span>生成量 <img src="https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fgen%2Fshortcopy&label=%E7%94%9F%E6%88%90%E9%87%8F&countColor=%230b6fa4" alt="生成量"></span>
+    </div>
+    <p>说明：文案由 AI 模型根据你粘贴的原文改写生成，请自行核对事实后再发布；发布到小红书、视频号等平台时，请按平台要求标注 AI 生成内容。本站只做生成，不做自动发布。生成内容版权归你所有。</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var API = 'https://text.pollinations.ai/';
+  var DAILY_LIMIT = 5;
+  var TIMEOUT_MS = 120000;
+
+  var srcEl = document.getElementById('src');
+  var audEl = document.getElementById('aud');
+  var goBtn = document.getElementById('go');
+  var quotaEl = document.getElementById('quota');
+
+  function todayKey() {
+    var d = new Date();
+    return 'sc_used_' + d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+  function usedCount() {
+    return parseInt(localStorage.getItem(todayKey()) || '0', 10) || 0;
+  }
+  function renderQuota() {
+    var left = DAILY_LIMIT - usedCount();
+    quotaEl.textContent = '今日剩余 ' + Math.max(left, 0) + ' / ' + DAILY_LIMIT + ' 次';
+    goBtn.disabled = left <= 0;
+    if (left <= 0) quotaEl.textContent += '（明天再来，或点“我想要更多次数”告诉我）';
+  }
+  function bumpGenBadge() {
+    var img = new Image();
+    img.src = 'https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fgen%2Fshortcopy&label=%E7%94%9F%E6%88%90%E9%87%8F&countColor=%230b6fa4&_=' + Date.now();
+  }
+
+  srcEl.addEventListener('input', function () {
+    document.getElementById('srcCount').textContent = srcEl.value.length;
+  });
+
+  var SAMPLE = '今天读了一篇讲独立开发的文章，作者一个人做了个小工具：帮写公众号、播客长文的人，自动生成小红书、朋友圈、推特三种风格的短文案。最开始只是他自己用着顺手的脚本，写完长文要手动拆三种文案太烦了。发到论坛分享之后，评论区反应不错，他才做成产品。前三个月基本零收入，注册才两百多，付费个位数，中间两次想放弃。后来他把目标用户从所有内容创作者，收窄到每天要发多平台内容的自媒体运营，定价从订阅制改成按次付费，转化率反而上去了。现在注册用户三千八百多，付费转化率百分之六左右，月流水四五千块。他踩过最大的坑是一开始想做全能工具，什么平台都支持，结果每个功能都做得不上不下，留存很差。砍到只做三个平台之后，留存反而涨了一倍。';
+
+  document.getElementById('example').addEventListener('click', function () {
+    srcEl.value = SAMPLE;
+    document.getElementById('srcCount').textContent = srcEl.value.length;
+    srcEl.focus();
+  });
+  document.getElementById('clear').addEventListener('click', function () {
+    srcEl.value = '';
+    audEl.value = '';
+    document.getElementById('srcCount').textContent = '0';
+  });
+
+  function buildPrompt(style, text, aud) {
+    var base = '你是一位擅长把长文改写成短文案的中文编辑。只根据下面提供的原文内容改写，不编造数字、案例、结论、人名、情节和情绪描写；原文没有的信息不要补。只输出文案本身，不要加任何解释、前缀或括号说明。\n';
+    var audLine = aud ? '目标读者是' + aud + '，语言风格向这群人靠拢。\n' : '';
+    var task = '';
+    if (style === 'xhs') task = '改写成一篇小红书笔记：先给一个吸引人的标题（20字以内），再写正文 300–500 字，口语化、有真实感、分段清晰，可用少量表情符号；结尾加 3–6 个相关话题标签（#话题）。';
+    if (style === 'pyq') task = '改写成一条朋友圈文案：口语化，像在跟朋友聊天，100 字左右，只写原文里最打动人的一点，结尾可以加一句互动提问。不要标题，不要话题标签。';
+    if (style === 'x') task = '改写成一条 X（推特）文案：280 字以内，短句、有钩子，第一句就要抓住人，信息密度高。可以分 2–3 行。最多 1–2 个话题标签。';
+    return base + audLine + task + '\n\n原文如下：\n' + text;
+  }
+
+  function callModel(prompt) {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS);
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], model: 'openai' }),
+      signal: ctrl.signal
+    }).then(function (resp) {
+      clearTimeout(timer);
+      if (!resp.ok) throw new Error('模型服务返回 HTTP ' + resp.status);
+      return resp.text();
+    }).then(function (t) {
+      var s = (t || '').trim();
+      if (!s) throw new Error('模型返回了空内容');
+      return s;
+    }).catch(function (e) {
+      clearTimeout(timer);
+      if (e.name === 'AbortError') throw new Error('生成超时（超过 120 秒），模型服务可能繁忙');
+      throw e;
+    });
+  }
+
+  function setOut(id, text, cls) {
+    var el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'out' + (cls ? ' ' + cls : '');
+  }
+  function setCount(id, n) {
+    document.getElementById(id).textContent = n ? ('共 ' + n + ' 字') : '';
+  }
+
+  goBtn.addEventListener('click', function () {
+    var text = srcEl.value.trim();
+    if (text.length < 30) { alert('请至少粘贴 30 字的长文再生成。'); return; }
+    if (usedCount() >= DAILY_LIMIT) { alert('今日 5 次已用完，明天再来。'); renderQuota(); return; }
+    if (text.length > 6000) { text = text.slice(0, 6000); }
+    var aud = audEl.value.trim();
+
+    goBtn.disabled = true;
+    goBtn.textContent = '生成中，请稍候…';
+    setOut('out-xhs', '生成中…', 'loading');
+    setOut('out-pyq', '生成中…', 'loading');
+    setOut('out-x', '生成中…', 'loading');
+
+    var jobs = [
+      { id: 'out-xhs', cid: 'count-xhs', style: 'xhs' },
+      { id: 'out-pyq', cid: 'count-pyq', style: 'pyq' },
+      { id: 'out-x', cid: 'count-x', style: 'x' }
+    ];
+    var done = 0, okCount = 0;
+    jobs.forEach(function (job) {
+      callModel(buildPrompt(job.style, text, aud)).then(function (res) {
+        setOut(job.id, res, '');
+        setCount(job.cid, res.length);
+        okCount++;
+      }).catch(function (e) {
+        setOut(job.id, '生成失败：' + e.message + '。请稍后重试，本次不计次数。', 'error');
+        setCount(job.cid, 0);
+      }).finally(function () {
+        done++;
+        if (done === jobs.length) {
+          goBtn.disabled = false;
+          goBtn.textContent = '一键生成三平台文案';
+          if (okCount > 0) {
+            try {
+              localStorage.setItem(todayKey(), String(usedCount() + 1));
+              bumpGenBadge();
+            } catch (e) {}
+            renderQuota();
+          } else {
+            renderQuota();
+          }
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.getAttribute('data-copy'));
+      var txt = el.textContent || '';
+      if (!txt || el.classList.contains('loading') || el.classList.contains('error') || txt.indexOf('还没有生成') === 0) {
+        alert('还没有可复制的内容。');
+        return;
+      }
+      function done() { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制'; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, function () { fallback(); });
+      } else { fallback(); }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) { alert('复制失败，请手动选中复制。'); }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  document.getElementById('want').addEventListener('click', function () {
+    var img = new Image();
+    img.src = 'https://api.visitorbadge.io/api/visitors?path=seekgirl.github.io%2Fwant%2Fshortcopy&label=%E6%84%BF%E6%9C%9B&countColor=%230b6fa4&_=' + Date.now();
+    document.getElementById('wantMsg').textContent = '收到，谢谢！更多次数正在准备中。';
+  });
+
+  renderQuota();
+})();
+</script>
+</body>
+</html>
